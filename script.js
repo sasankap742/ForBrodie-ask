@@ -47,8 +47,8 @@ function createAngryCats(numCats) {
             const cat = document.createElement('img');
             cat.src = 'cat_mad.png';
             cat.className = 'angry-cat';
-            cat.style.width = '80px';
-            cat.style.height = '80px';
+            cat.style.width = '120px';
+            cat.style.height = '120px';
             cat.style.position = 'fixed';
             cat.style.zIndex = '1000';
             
