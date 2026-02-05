@@ -186,12 +186,12 @@ function updateCatToDancing() {
     
     if (merylContainer) {
         // Remove Meryl and show dancing cat
-        merylContainer.outerHTML = '<img src="cat_dance.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
+        merylContainer.outerHTML = '<img src="freakyCat.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
     } else {
         // Just update existing cat
         const existingCat = document.getElementById('letter-cat');
         if (existingCat) {
-            existingCat.src = "cat_dance.gif";
+            existingCat.src = "freakyCat.gif";
         }
     }
     
@@ -212,12 +212,12 @@ yesBtn.addEventListener("click", () => {
     
     if (merylContainer) {
         // Remove Meryl and show dancing cat
-        merylContainer.outerHTML = '<img src="cat_dance.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
+        merylContainer.outerHTML = '<img src="freakyCat.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
     } else {
         // Just update existing cat
         const existingCat = document.getElementById('letter-cat');
         if (existingCat) {
-            existingCat.src = "cat_dance.gif";
+            existingCat.src = "freakyCat.gif";
         }
     }
     
