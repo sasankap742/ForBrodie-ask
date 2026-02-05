@@ -34,7 +34,43 @@ noBtn.addEventListener("mouseover", () => {
 
     noBtn.style.transition = "transform 0.3s ease";
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+    // Create angry cats
+    createAngryCats(3);
+
 });
+
+// Function to create angry cat pop-ups
+function createAngryCats(numCats) {
+    for (let i = 0; i < numCats; i++) {
+        setTimeout(() => {
+            const cat = document.createElement('img');
+            cat.src = 'cat_mad.png';
+            cat.className = 'angry-cat';
+            cat.style.width = '80px';
+            cat.style.height = '80px';
+            cat.style.position = 'fixed';
+            cat.style.zIndex = '1000';
+            
+            // Random position
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            
+            cat.style.left = `${x}px`;
+            cat.style.top = `${y}px`;
+            
+            // Add to document
+            document.body.appendChild(cat);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (cat.parentNode) {
+                    cat.parentNode.removeChild(cat);
+                }
+            }, 1800);
+        }, i * 100); // Stagger the appearance
+    }
+}
 
 // Logic to make YES btn to grow
 
