@@ -13,7 +13,7 @@ const finalText = document.getElementById("final-text");
 
 // Track no button hover count
 let noHoverCount = 0;
-const MAX_HOVERS = 3;
+const MAX_HOVERS = 2;
 
 
 envelope.addEventListener("click", () => {
