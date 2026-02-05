@@ -130,7 +130,7 @@ function showMeryl() {
                 width: 100%;
                 text-shadow: 2px 2px 0 #000;
             ">
-                Don't even think about saying no...
+                Don't even think about saying no...That’s all.
             </p>
         </div>
     `;
