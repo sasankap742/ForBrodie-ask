@@ -9,14 +9,26 @@ const catImg = document.getElementById("letter-cat");
 const buttons = document.getElementById("letter-buttons");
 const finalText = document.getElementById("final-text");
 
-// Click Envelope
-
-// Track no button hover count
 let noHoverCount = 0;
-const MAX_HOVERS = 2;
+const MAX_HOVERS = 3;
 
+// Sound helper functions
+function playClickSound() {
+    const clickSound = new Audio('clickButton.mp3');
+    clickSound.volume = 0.5;
+    clickSound.play().catch(e => console.log("Click sound failed:", e));
+}
 
+function playThudSound() {
+    const thudSound = new Audio('thudShocked.mp3');
+    thudSound.volume = 0.4;
+    thudSound.play().catch(e => console.log("Thud sound failed:", e));
+}
+
+// Click Envelope
 envelope.addEventListener("click", () => {
+    playClickSound(); // Play click sound when envelope opens
+    
     envelope.style.display = "none";
     letter.style.display = "flex";
 
@@ -25,17 +37,16 @@ envelope.addEventListener("click", () => {
     },50);
 });
 
-// Logic to move the NO btn
-
+// NO button hover
 noBtn.addEventListener("mouseover", () => {
+    playThudSound(); // Play thud sound when hovering No button
+    
     noHoverCount++;
     
-    // First and second hover: normal behavior
     if (noHoverCount < MAX_HOVERS) {
         moveNoButton();
         createAngryCats(3);
     } 
-    // Third hover: special Meryl treatment
     else if (noHoverCount === MAX_HOVERS) {
         // Return button to original position
         noBtn.style.transition = "transform 0.5s ease";
@@ -49,10 +60,146 @@ noBtn.addEventListener("mouseover", () => {
         // Prevent further moves after third hover
         noBtn.style.pointerEvents = "none";
     }
-
 });
 
-// Function to move no button (extracted for reuse)
+// YES button click
+yesBtn.addEventListener("click", () => {
+    playClickSound(); // Play click sound when Yes is clicked
+    
+    title.textContent = "Yippeeee!";
+    document.querySelector(".letter-window").classList.add("final");
+    buttons.style.display = "none";  // This hides buttons
+    finalText.style.display = "block";  // This shows final text
+
+    const merylContainer = document.getElementById('meryl-container');
+    
+    if (merylContainer) {
+        // Remove Meryl and show dancing cat
+        merylContainer.outerHTML = '<img src="freakyCat.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
+    } else {
+        // Just update existing cat
+        const existingCat = document.getElementById('letter-cat');
+        if (existingCat) {
+            existingCat.src = "freakyCat.gif";
+        }
+    }
+    
+    
+
+    
+    // Use arrow function to maintain context
+    setTimeout(() => {
+        console.log("5 seconds passed, starting dramatic ending...");
+        startDramaticEnding();
+    }, 5000);
+});
+
+// NEW FUNCTION: Dramatic ending sequence
+function startDramaticEnding() {
+    console.log("Starting dramatic ending...");
+    
+    // 1. Make freaky cat disappear
+    const currentCat = document.getElementById('letter-cat');
+    if (currentCat) {
+        console.log("Found cat, fading out...");
+        currentCat.style.transition = 'opacity 1s ease';
+        currentCat.style.opacity = '0';
+        setTimeout(() => {
+            currentCat.style.display = 'none';
+        }, 1000);
+    } else {
+        console.log("No cat found!");
+    }
+    
+    // 2. Change the final text after cat fades
+    setTimeout(() => {
+        console.log("Changing final text...");
+        if (finalText) {
+            title.style.display = "none";
+            finalText.innerHTML = `
+                <strong>Alright Pookie, this page is going to self destruct now <3</strong>
+                <div id="countdown" style="
+                    font-size: 48px;
+                    font-weight: bold;
+                    color: #ff0000;
+                    margin-top: 20px;
+                    text-shadow: 2px 2px 0 #000;
+                ">5</div>
+            `;
+            
+            // 3. Start countdown
+            startCountdown();
+        }
+    }, 1500);
+}
+
+// NEW FUNCTION: Countdown and self destruct
+function startCountdown() {
+    let count = 5;
+    const countdownElement = document.getElementById('countdown');
+    
+    const countdownInterval = setInterval(() => {
+        count--;
+        
+        if (count > 0) {
+            countdownElement.textContent = count;
+            // Optional: Add shake effect
+            countdownElement.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                countdownElement.style.animation = '';
+            }, 500);
+        } else {
+            countdownElement.textContent = 'BOOM!';
+            clearInterval(countdownInterval);
+            
+            // Self destruct after "BOOM!"
+            setTimeout(selfDestruct, 1000);
+        }
+    }, 1000);
+}
+
+//Self destruct - black screen
+function selfDestruct() {
+    const blackScreen = document.createElement('div');
+    blackScreen.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 32px;
+        flex-direction: column;
+        animation: fadeIn 1s forwards;
+    `;
+    
+    //final message
+    blackScreen.innerHTML = `
+        <div style="text-align: center;">
+            <div>See you on Valentine's Day! 💖</div>
+            <div style="font-size: 18px; margin-top: 30px; opacity: 0.7;">
+            </div>
+        </div>
+    `;
+    
+    
+    document.body.appendChild(blackScreen);
+    
+    setTimeout(() => {
+        const letterContainer = document.getElementById('letter-container');
+        if (letterContainer) {
+            letterContainer.style.display = 'none';
+        }
+    }, 500);
+}
+
+
+//move no button
 function moveNoButton() {
     const min = 200;
     const max = 200;
@@ -65,29 +212,29 @@ function moveNoButton() {
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
 }
 
-// Function to create angry cat pop-ups
+//angry cat pop-ups
 function createAngryCats(numCats) {
     for (let i = 0; i < numCats; i++) {
         setTimeout(() => {
             const cat = document.createElement('img');
             cat.src = 'cat_mad.png';
             cat.className = 'angry-cat';
-            cat.style.width = '180px';
-            cat.style.height = '180px';
+            cat.style.width = '225px';
+            cat.style.height = '225px';
             cat.style.position = 'fixed';
             cat.style.zIndex = '1000';
             
-            // Random position
+            
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 100);
             
             cat.style.left = `${x}px`;
             cat.style.top = `${y}px`;
             
-            // Add to document
+          
             document.body.appendChild(cat);
             
-            // Remove after animation
+            //remove after
             setTimeout(() => {
                 if (cat.parentNode) {
                     cat.parentNode.removeChild(cat);
@@ -97,13 +244,11 @@ function createAngryCats(numCats) {
     }
 }
 
-
-// Function to show Meryl Streep with gun (Alternative approach)
+//Meryl Streep with gun
 function showMeryl() {
-    // Store original cat for later restoration
+    //Store original cat for later restoration
     const originalCat = catImg;
     
-    // Create a container that will replace the cat's position
     const merylHTML = `
         <div id="meryl-container" style="
             display: flex;
@@ -130,98 +275,78 @@ function showMeryl() {
                 width: 100%;
                 text-shadow: 2px 2px 0 #000;
             ">
-                Don't even think about saying no...That’s all.
+                Don't even think about saying no...That's all.
             </p>
         </div>
     `;
+    noBtn.style.display = 'none';
     
-    // Replace the cat with Meryl
     catImg.outerHTML = merylHTML;
     
-    // Get the new container
+    //this is ass
+    //createShockedCrowd(4); 
+    
+    playCrowdGasp();
     const merylContainer = document.getElementById('meryl-container');
     
-    // Make clickable to restore
-    merylContainer.addEventListener('click', () => {
-        // Restore original cat
-        merylContainer.outerHTML = '<img src="cat_heart.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
-        
-        // Re-enable no button and reset counter
-        noBtn.style.pointerEvents = 'auto';
-        noHoverCount = 0;
-        
-        // Re-get the cat element reference
-        catImg = document.getElementById('letter-cat');
+    
+}
+
+//shocked crowd pop-ups ////meehhh
+function createShockedCrowd(numCrowd) {
+    for (let i = 0; i < numCrowd; i++) {
+        setTimeout(() => {
+            const crowd = document.createElement('img');
+            crowd.src = 'crowdShocked.PNG';
+            crowd.className = 'shocked-crowd';
+            crowd.style.width = '350px';
+            crowd.style.height = 'auto';
+            crowd.style.position = 'fixed';
+            crowd.style.zIndex = '999';
+            
+            // Position OUTSIDE the letter window (random positions around edges)
+            const positions = [
+                { left: '-100px', top: Math.random() * window.innerHeight + 'px' },
+                { left: window.innerWidth + 'px', top: Math.random() * window.innerHeight + 'px' },
+                { left: Math.random() * window.innerWidth + 'px', top: '-100px' },
+                { left: Math.random() * window.innerWidth + 'px', top: window.innerHeight + 'px' }
+            ];
+            
+            const randomPos = positions[Math.floor(Math.random() * positions.length)];
+            crowd.style.left = randomPos.left;
+            crowd.style.top = randomPos.top;
+            
+            document.body.appendChild(crowd);
+            
+            setTimeout(() => {
+                crowd.style.transition = 'all 0.5s ease';
+                
+                if (randomPos.left === '-100px') {
+                    crowd.style.left = '20px';
+                } else if (randomPos.left.includes('window.innerWidth')) {
+                    crowd.style.left = (window.innerWidth - 170) + 'px';
+                } else if (randomPos.top === '-100px') {
+                    crowd.style.top = '20px';
+                } else {
+                    crowd.style.top = (window.innerHeight - 170) + 'px';
+                }
+            }, 100);
+            
+            //Remove after
+            setTimeout(() => {
+                if (crowd.parentNode) {
+                    crowd.parentNode.removeChild(crowd);
+                }
+            }, 3000);
+        }, i * 200);
+    }
+}
+
+// Function: Play crowd gasp audio/// nvm stand off fuck it 
+function playCrowdGasp() {
+    const gaspAudio = new Audio('standOff.mp3');
+    gaspAudio.volume = 0.7;
+    gaspAudio.play().catch(error => {
+        console.log("Audio play failed:", error);
     });
 }
-
-// Logic to make YES btn to grow
-
-// let yesScale = 1;
-
-// yesBtn.style.position = "relative"
-// yesBtn.style.transformOrigin = "center center";
-// yesBtn.style.transition = "transform 0.3s ease";
-
-// noBtn.addEventListener("click", () => {
-//     yesScale += 2;
-
-//     if (yesBtn.style.position !== "fixed") {
-//         yesBtn.style.position = "fixed";
-//         yesBtn.style.top = "50%";
-//         yesBtn.style.left = "50%";
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }else{
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }
-// });
-
-
-
-// YES is clicked
-// Helper function to restore/update the cat
-function updateCatToDancing() {
-    const merylContainer = document.getElementById('meryl-container');
-    const catContainer = document.querySelector('.letter-window');
-    
-    if (merylContainer) {
-        // Remove Meryl and show dancing cat
-        merylContainer.outerHTML = '<img src="freakyCat.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
-    } else {
-        // Just update existing cat
-        const existingCat = document.getElementById('letter-cat');
-        if (existingCat) {
-            existingCat.src = "freakyCat.gif";
-        }
-    }
-    
-    // Always re-get the cat reference
-    catImg = document.getElementById('letter-cat');
-}
-
-// YES is clicked (updated version)
-yesBtn.addEventListener("click", () => {
-    
-    title.textContent = "Yippeeee!";
-    document.querySelector(".letter-window").classList.add("final");
-    buttons.style.display = "none";  // This hides buttons
-    finalText.style.display = "block";  // This shows final text
-
-    const merylContainer = document.getElementById('meryl-container');
-    const catContainer = document.querySelector('.letter-window');
-    
-    if (merylContainer) {
-        // Remove Meryl and show dancing cat
-        merylContainer.outerHTML = '<img src="freakyCat.gif" class="cat" id="letter-cat" style="width: 250px; margin: 10px 0;">';
-    } else {
-        // Just update existing cat
-        const existingCat = document.getElementById('letter-cat');
-        if (existingCat) {
-            existingCat.src = "freakyCat.gif";
-        }
-    }
-    
-    // Always re-get the cat reference
-    catImg = document.getElementById('letter-cat');
-
-});
